@@ -11,6 +11,17 @@
   assign product_form_id = 'QuickAdd-ProductForm-' | append: product.id | append: '-' | append: block.id
   assign add_to_cart_text = 'actions.add' | t
   assign choose_options_text = 'actions.choose' | t
+  assign quote_button_text = 'Request quote'
+  assign selected_variant = product.selected_or_first_available_variant
+  capture quote_details
+    echo 'Product: '
+    echo product.title
+    echo ' Variant: '
+    echo selected_variant.title | default: 'Default'
+    echo ' Quantity: 1 URL: '
+    echo shop.url
+    echo product.url
+  endcapture
   assign color_scheme = color_scheme | default: settings.quick_add_color_scheme
 
   # Logic to determine which variant to use (matching swatch selection logic from product-card)
@@ -74,41 +85,67 @@
             - There is only one product option, and it is displayed as swatches on the product card, and no swatch is selected
             - There is more than one product option
       {% endcomment %}
-      {% render 'add-to-cart-button',
-        add_to_cart_text: add_to_cart_text,
-        class: 'button quick-add__button quick-add__button--add add-to-cart-button',
-        can_add_to_cart: can_add_to_cart,
-        icon_only_on_mobile: true,
-        product: product
-      %}
-
-      <button
-        class="button quick-add__button quick-add__button--choose add-to-cart-button"
-        {% comment %} type="submit" is the default, so we explicitly set it to "button" to prevent the ProductFormComponent.handleSubmit from being triggered {% endcomment %}
-        type="button"
-        name="add"
-        on:click="quick-add-component/handleClick"
-      >
-        <span
-          class="add-to-cart-text"
+      {% if settings.hide_all_prices %}
+        <button
+          type="button"
+          class="button quick-add__button quick-add__button--add add-to-cart-button"
+          data-request-quote-trigger
+          data-quote-source="product card"
+          data-quote-product-title="{{ product.title | escape }}"
+          data-quote-url="{{ shop.url }}{{ product.url }}"
+          data-quote-details="{{ quote_details | strip | escape }}"
         >
-          {% comment %} split the icon and the text with a grid transition {% endcomment %}
-          <span
-            aria-hidden="true"
-            class="svg-wrapper add-to-cart-icon"
-          >
-            {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
-          </span>
-          <span class="add-to-cart-text__content is-visually-hidden-mobile">
-            <span>
-              {% comment %} use a double-nested span to bake the padding into the text {% endcomment %}
+          <span class="add-to-cart-text">
+            <span
+              aria-hidden="true"
+              class="svg-wrapper add-to-cart-icon"
+            >
+              {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+            </span>
+            <span class="add-to-cart-text__content is-visually-hidden-mobile">
               <span>
-                {{ choose_options_text }}
+                <span>{{ quote_button_text }}</span>
               </span>
             </span>
           </span>
-        </span>
-      </button>
+        </button>
+      {% else %}
+        {% render 'add-to-cart-button',
+          add_to_cart_text: add_to_cart_text,
+          class: 'button quick-add__button quick-add__button--add add-to-cart-button',
+          can_add_to_cart: can_add_to_cart,
+          icon_only_on_mobile: true,
+          product: product
+        %}
+
+        <button
+          class="button quick-add__button quick-add__button--choose add-to-cart-button"
+          {% comment %} type="submit" is the default, so we explicitly set it to "button" to prevent the ProductFormComponent.handleSubmit from being triggered {% endcomment %}
+          type="button"
+          name="add"
+          on:click="quick-add-component/handleClick"
+        >
+          <span
+            class="add-to-cart-text"
+          >
+            {% comment %} split the icon and the text with a grid transition {% endcomment %}
+            <span
+              aria-hidden="true"
+              class="svg-wrapper add-to-cart-icon"
+            >
+              {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+            </span>
+            <span class="add-to-cart-text__content is-visually-hidden-mobile">
+              <span>
+                {% comment %} use a double-nested span to bake the padding into the text {% endcomment %}
+                <span>
+                  {{ choose_options_text }}
+                </span>
+              </span>
+            </span>
+          </span>
+        </button>
+      {% endif %}
     {%- endform -%}
   </product-form-component>
 </quick-add-component>

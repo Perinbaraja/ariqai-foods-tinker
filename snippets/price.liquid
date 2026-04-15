@@ -7,6 +7,7 @@
   @param {boolean} [show_sale_price_first] - Whether to show the sale price first
 {%- enddoc -%}
 
+{% unless settings.hide_all_prices %}
 {%- liquid
   assign show_unit_price = show_unit_price | default: false
   assign show_sale_price_first = show_sale_price_first | default: false
@@ -145,3 +146,4 @@
     {{- 'content.volume_pricing_available' | t -}}
   </small>
 {%- endif -%}
+{% endunless %}

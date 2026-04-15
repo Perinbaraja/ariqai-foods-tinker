@@ -2036,6 +2036,12 @@
     "name": "t:names.prices",
     "settings": [
       {
+        "type": "checkbox",
+        "id": "hide_all_prices",
+        "label": "Hide all prices",
+        "default": false
+      },
+      {
         "type": "header",
         "content": "t:settings.currency_code"
       },

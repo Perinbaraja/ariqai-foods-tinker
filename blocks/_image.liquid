@@ -9,7 +9,7 @@
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
-{% assign image = closest.collection.featured_image | default: closest.product.featured_image %}
+{% assign image = block_settings.image | default: closest.collection.featured_image | default: closest.product.featured_image %}
 {% if decorative_image %}
   {% assign alt = '' %}
 {% else %}
@@ -129,6 +129,11 @@
     {
       "type": "paragraph",
       "content": "t:content.resource_reference_collection_card_image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image override"
     },
     {
       "type": "select",

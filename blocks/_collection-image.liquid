@@ -1,6 +1,7 @@
 
 
 {% assign block_settings = block.settings %}
+{% assign display_image = block_settings.image | default: block_settings.collection.featured_image %}
 
 {% if block_settings.image_ratio == 'custom' %}
   {% assign image_width = block_settings.collection_image_width | at_most: 100 %}
@@ -11,10 +12,10 @@
   assign ratio = 1
   assign block_ratio = block_settings.image_ratio
 
-  if block_settings.collection.image and block_ratio == 'portrait'
+  if display_image and block_ratio == 'portrait'
     assign ratio = 0.8
-  elsif block_settings.collection.image and block_ratio == 'adapt'
-    assign ratio = block_settings.collection.image.aspect_ratio
+  elsif display_image and block_ratio == 'adapt'
+    assign ratio = display_image.aspect_ratio
   endif
 
   if ratio == 0 or ratio == null
@@ -26,7 +27,7 @@
   endif
 %}
 
-{% if block_settings.collection.featured_image %}
+{% if display_image %}
   <div
     class="collection-image spacing-style collection-image-{{ block.id }}"
     style="--ratio: {{ ratio }}; --image-width: {{ image_width }}%; {% render 'spacing-style', settings: block_settings %}"
@@ -39,7 +40,7 @@
     %}
 
     {{
-      block_settings.collection.featured_image
+      display_image
       | image_url: width: 3840
       | image_tag: preload: true, class: 'collection-image__featured-image', widths: widths, sizes: sizes
     }}
@@ -66,6 +67,11 @@
       "type": "collection",
       "id": "collection",
       "label": "t:settings.collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image override"
     },
     {
       "type": "select",

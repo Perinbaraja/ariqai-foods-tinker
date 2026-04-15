@@ -511,7 +511,7 @@
       ></a>
     {%- endif -%}
     <div
-      class="hero__media-grid"
+      class="hero__media-grid{% if media_count == 0 %} hero__media-grid--fallback{% endif %}"
       style="--hero-media-count: {{ media_count }};--hero-media-count-mobile: {{ media_count_mobile }};{%- if section.settings.image_1 != blank -%} --hero-media-aspect-ratio: {{ section.settings.image_1.aspect_ratio }};{% endif %}"
       data-testid="hero-media-wrapper"
     >
@@ -594,6 +594,21 @@
     display: grid;
     grid-column: 1 / -1;
     grid-template-columns: repeat(var(--hero-media-count, 1), 1fr);
+  }
+
+  .hero__media-grid--fallback {
+    background: linear-gradient(135deg, rgba(255, 241, 210, 0.9), rgba(255, 214, 167, 0.95));
+  }
+
+  .hero__media-grid--fallback::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 12%),
+      radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 10%),
+      radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.25) 0%, transparent 15%);
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   .hero--auto .hero__media {

@@ -685,4 +685,26 @@
     --cart-secondary-font-style: var(--font-{{ settings.cart_price_font }}--style);
     --cart-secondary-font-weight: var(--font-{{ settings.cart_price_font }}--weight);
   }
+
+  {% if settings.hide_all_prices %}
+    product-price,
+    .price,
+    .price__regular,
+    .price__sale,
+    .compare-at-price,
+    .unit-price,
+    .volume-pricing,
+    .volume-pricing-note,
+    .volume-pricing-info,
+    .hotspot-dialog__product-price,
+    .cart-items__unit-price-wrapper,
+    .cart-items__price,
+    .cart-totals__original-container,
+    .cart-totals__container,
+    .cart-discounts,
+    .price-filter,
+    .price-per-item {
+      display: none !important;
+    }
+  {% endif %}
 {% endstyle %}

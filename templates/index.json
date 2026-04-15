@@ -93,7 +93,7 @@
                   "type": "text",
                   "name": "Heading",
                   "settings": {
-                    "text": "<h2><em>Introducing</em></h2>",
+                    "text": "<h2><em>Fresh flavors. Thoughtful ingredients.</em></h2>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -118,7 +118,7 @@
                 "text_m9AcWC": {
                   "type": "text",
                   "settings": {
-                    "text": "<h1>Our Newest Arrivals </h1>",
+                    "text": "<h1>Discover premium pantry favorites for every meal.</h1>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -139,18 +139,33 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {}
+                },
+                "button_ShopBestSellers": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop new arrivals",
+                    "link": "shopify://collections/all",
+                    "open_in_new_tab": false,
+                    "style_class": "button",
+                    "width": "fit-content",
+                    "custom_width": 100,
+                    "width_mobile": "fit-content",
+                    "custom_width_mobile": 100
+                  },
+                  "blocks": {}
                 }
               },
               "block_order": [
                 "text_nptTQe",
-                "text_m9AcWC"
+                "text_m9AcWC",
+                "button_ShopBestSellers"
               ]
             },
             "text_ebNxhf": {
               "type": "text",
               "name": "Text",
               "settings": {
-                "text": "<p>Bring order to the chaos. When all your tech essentials have a dedicated spot on your desk, you don’t have to waste any time searching for them. </p>",
+                "text": "<p>Ariqai Foods delivers pantry staples, snacks, and kitchen essentials that help you cook with confidence and joy.</p>",
                 "width": "fit-content",
                 "max_width": "none",
                 "alignment": "left",
@@ -249,7 +264,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>Make Your Workspace Yours</h3>",
+                "text": "<h3>Handpicked pantry favorites</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -433,14 +448,84 @@
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
-        "columns_gap": 12,
-        "rows_gap": 12,
+        "columns_gap": 24,
+        "rows_gap": 32,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 28,
         "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    },
+    "featured_blog_posts_W8gJkR": {
+      "type": "featured-blog-posts",
+      "blocks": {
+        "static-blog-title": {
+          "type": "_featured-blog-posts-title",
+          "static": true,
+          "settings": {
+            "text": "<h2>From the kitchen</h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-blog-post-card": {
+          "type": "_featured-blog-posts-card",
+          "static": true,
+          "settings": {
+            "alignment": "left",
+            "gap": 16,
+            "inherit_color_scheme": true,
+            "color_scheme": "scheme-1",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 24,
+            "padding-block-end": 24,
+            "padding-inline-start": 24,
+            "padding-inline-end": 24
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [],
+      "name": "t:names.blog_posts",
+      "settings": {
+        "blog": "",
+        "layout_type": "grid",
+        "carousel_on_mobile": true,
+        "post_limit": 3,
+        "columns": 3,
+        "mobile_columns": "1",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 24,
+        "rows_gap": 24,
+        "icons_style": "none",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "gap": 48,
+        "color_scheme": "",
         "padding-block-start": 48,
         "padding-block-end": 64
       }
@@ -494,7 +579,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>Productivity Essentials</h2>",
+                "text": "<h2>Eat better every day</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -519,7 +604,7 @@
             "text_jxGhdJ": {
               "type": "text",
               "settings": {
-                "text": "<p>Objects that partner with your digital tools so you can focus on your most important work.</p>",
+                "text": "<p>From pantry staples to seasonal favorites, Ariqai Foods helps you create meals that feel delicious and effortless.</p>",
                 "width": "fit-content",
                 "max_width": "narrow",
                 "alignment": "left",
@@ -544,7 +629,7 @@
             "button_zg4nUF": {
               "type": "button",
               "settings": {
-                "label": "Shop Now",
+                "label": "Browse collections",
                 "link": "shopify://collections/all",
                 "open_in_new_tab": false,
                 "style_class": "button",
@@ -622,7 +707,7 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<h2>Shop by Collection</h2>",
+                "text": "<h2>Explore by Collection</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -740,7 +825,8 @@
   "order": [
     "hero_iLBwPd",
     "product_list_EDUBdR",
-    "media_with_content_LfPdEJ",
-    "collection_list_xpBxCm"
+    "featured_blog_posts_W8gJkR",
+    "collection_list_xpBxCm",
+    "media_with_content_LfPdEJ"
   ]
 }

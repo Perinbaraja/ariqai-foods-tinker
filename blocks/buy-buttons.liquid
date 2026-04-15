@@ -131,7 +131,7 @@
             </div>
           {%- endif -%}
 
-          {%- if product.quantity_price_breaks_configured? and variant.quantity_price_breaks.size > 0 -%}
+          {%- if settings.hide_all_prices != true and product.quantity_price_breaks_configured? and variant.quantity_price_breaks.size > 0 -%}
             {%- liquid
               assign use_currency = settings.currency_code_enabled_product_pages
             -%}
