@@ -587,6 +587,7 @@
           "block_order": []
         }
       },
+      "disabled": true,
       "name": "t:names.blog_posts",
       "settings": {
         "blog": "",
@@ -748,6 +749,7 @@
       "block_order": [
         "group_mfTd9p"
       ],
+      "disabled": true,
       "name": "Collection list",
       "settings": {
         "collection_list": [],
