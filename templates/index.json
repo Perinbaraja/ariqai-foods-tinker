@@ -778,7 +778,8 @@
           "type": "_media-without-appearance",
           "static": true,
           "settings": {
-            "media_type": "video",
+            "media_type": "image",
+            "image": "shopify://shop_images/breakfast-from-above.jpg",
             "link": "",
             "video_loop": true,
             "video_autoplay": true,
