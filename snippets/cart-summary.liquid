@@ -262,7 +262,6 @@
 </div>
 
 <div class="cart__ctas">
-  {% if settings.hide_all_prices %}
     {% capture cart_quote_details %}
       {% for item in cart.items %}
         {{ item.product.title }}{% unless item.variant.title == 'Default Title' %} - {{ item.variant.title }}{% endunless %} x {{ item.quantity }}{% unless forloop.last %}\n{% endunless %}
@@ -278,33 +277,7 @@
     >
       <span class="button-text">Request quote</span>
     </button>
-  {% else %}
-    <button
-      type="submit"
-      id="checkout"
-      class="cart__checkout-button button"
-      name="checkout"
-      {% if cart == empty %}
-        disabled
-      {% endif %}
-      form="cart-form"
-    >
-      <span class="button-text">
-        {{ 'content.checkout' | t }}
-      </span>
-    </button>
 
-    {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
-      <div
-        class="
-          additional-checkout-buttons
-          {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
-        "
-      >
-        {{ content_for_additional_checkout_buttons }}
-      </div>
-    {% endif %}
-  {% endif %}
 </div>
 
 {% stylesheet %}

@@ -85,31 +85,7 @@
             - There is only one product option, and it is displayed as swatches on the product card, and no swatch is selected
             - There is more than one product option
       {% endcomment %}
-      {% if settings.hide_all_prices %}
-        <button
-          type="button"
-          class="button quick-add__button quick-add__button--add add-to-cart-button"
-          data-request-quote-trigger
-          data-quote-source="product card"
-          data-quote-product-title="{{ product.title | escape }}"
-          data-quote-url="{{ shop.url }}{{ product.url }}"
-          data-quote-details="{{ quote_details | strip | escape }}"
-        >
-          <span class="add-to-cart-text">
-            <span
-              aria-hidden="true"
-              class="svg-wrapper add-to-cart-icon"
-            >
-              {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
-            </span>
-            <span class="add-to-cart-text__content is-visually-hidden-mobile">
-              <span>
-                <span>{{ quote_button_text }}</span>
-              </span>
-            </span>
-          </span>
-        </button>
-      {% else %}
+
         {% render 'add-to-cart-button',
           add_to_cart_text: add_to_cart_text,
           class: 'button quick-add__button quick-add__button--add add-to-cart-button',
@@ -145,7 +121,7 @@
             </span>
           </span>
         </button>
-      {% endif %}
+
     {%- endform -%}
   </product-form-component>
 </quick-add-component>
