@@ -1,31 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
   const cartContainer = document.getElementById('RequestQuoteCartContainer');
   const form = document.querySelector('.request-quote-page__form');
-  const hiddenProductsInput = document.getElementById('RequestQuoteHiddenProducts');
-  
-  if (!cartContainer) return;
+  const successMessage = document.querySelector('.request-quote-page__success');
+  const errorMessage = document.querySelector('.request-quote-page__error');
 
-  // Fetch Cart Data
-  fetch(window.Shopify.routes.root + 'cart.js')
-    .then((response) => response.json())
-    .then((cart) => {
-      renderCartItems(cart);
-    })
-    .catch((error) => {
-      console.error('Error fetching cart:', error);
-      cartContainer.innerHTML = '<p class="request-quote-page__error">Failed to load cart items. Please refresh the page.</p>';
-    });
+  let cartItems = [];
 
-  function renderCartItems(cart) {
-    if (cart.item_count === 0) {
+  function showSuccess() {
+    if (successMessage) successMessage.style.display = 'block';
+    if (errorMessage) errorMessage.style.display = 'none';
+  }
+
+  function showError() {
+    if (successMessage) successMessage.style.display = 'none';
+    if (errorMessage) errorMessage.style.display = 'block';
+  }
+
+  function renderCartItems(items) {
+    if (!cartContainer) return;
+
+    if (!items || items.length === 0) {
       cartContainer.innerHTML = `
         <div class="request-quote-page__empty-cart">
           <p>Your cart is empty.</p>
           <a href="/collections/all" class="button">Continue Shopping</a>
         </div>
       `;
-      // Optionally disable the submit button if cart is empty
-      const submitBtn = form.querySelector('button[type="submit"]');
+      const submitBtn = form?.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Cart is empty';
@@ -33,19 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    let itemsHtml = '';
-    let productsText = 'Products:\n\n';
-
-    cart.items.forEach((item, index) => {
-      // Build HTML
-      const imageHtml = item.image 
-        ? `<img src="${item.image}" alt="${item.product_title}" loading="lazy">`
-        : '';
-        
+    const itemsHtml = items.map((item) => {
+      const imageHtml = item.image ? `<img src="${item.image}" alt="${item.product_title}" loading="lazy">` : '';
       const variantHtml = item.variant_title ? `<span class="request-quote-item__variant">Variant: ${item.variant_title}</span>` : '';
       const skuHtml = item.sku ? `<span class="request-quote-item__sku">SKU: ${item.sku}</span>` : '';
 
-      itemsHtml += `
+      return `
         <div class="request-quote-item">
           <div class="request-quote-item__image">${imageHtml}</div>
           <div class="request-quote-item__details">
@@ -56,34 +50,79 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-
-      // Build Text for Form
-      productsText += `${index + 1}. ${item.product_title}`;
-      if (item.variant_title) {
-        productsText += ` - ${item.variant_title}`;
-      }
-      if (item.sku) {
-        productsText += ` (SKU: ${item.sku})`;
-      }
-      productsText += ` × ${item.quantity}\n`;
-    });
+    }).join('');
 
     cartContainer.innerHTML = itemsHtml;
-    
-    if (hiddenProductsInput) {
-      hiddenProductsInput.value = productsText;
+  }
+
+  async function fetchCart() {
+    try {
+      const response = await fetch(window.Shopify.routes.root + 'cart.js');
+      const cart = await response.json();
+      cartItems = cart.items || [];
+      renderCartItems(cartItems);
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      if (cartContainer) {
+        cartContainer.innerHTML = '<p class="request-quote-page__error">Failed to load cart items. Please refresh the page.</p>';
+      }
     }
   }
 
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      // Intercept to build the final body field
-      const bodyInput = document.getElementById('RequestQuoteForm-ContactBody');
-      const notesInput = document.getElementById('RequestQuoteForm-body');
-      const productsText = hiddenProductsInput.value || 'No products found.';
-      const notesText = notesInput ? notesInput.value : '';
+  async function sendQuoteRequest(payload) {
+    const endpoint = '/apps/quote-mailer';
 
-      bodyInput.value = `${productsText}\nAdditional Notes:\n${notesText || 'None'}`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.message || 'Failed to send quote request');
+    }
+
+    return response.json();
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const customerName = document.getElementById('RequestQuoteForm-name')?.value.trim();
+      const customerEmail = document.getElementById('RequestQuoteForm-email')?.value.trim();
+      const customerPhone = document.getElementById('RequestQuoteForm-phone')?.value.trim();
+      const company = document.getElementById('RequestQuoteForm-company')?.value.trim();
+      const notes = document.getElementById('RequestQuoteForm-body')?.value.trim();
+
+      const payload = {
+        customerName,
+        customerEmail,
+        customerPhone,
+        company,
+        notes,
+        products: cartItems.map((item) => ({
+          name: item.product_title,
+          variant: item.variant_title || '',
+          sku: item.sku || '',
+          quantity: item.quantity,
+        })),
+      };
+
+      try {
+        await sendQuoteRequest(payload);
+        showSuccess();
+        form.reset();
+      } catch (error) {
+        console.error('Quote request failed', error);
+        showError();
+      }
     });
   }
+
+  fetchCart();
 });
