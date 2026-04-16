@@ -9,11 +9,14 @@
  */
 {
   "current": {
-    "type_body_font": "instrument_sans_n4",
-    "type_subheading_font": "instrument_sans_n4",
-    "type_heading_font": "instrument_serif_n4",
-    "type_accent_font": "instrument_serif_n4",
+    "logo_height": 36,
+    "logo_height_mobile": 28,
+    "type_body_font": "sans_serif_n4",
+    "type_subheading_font": "sans_serif_n4",
+    "type_heading_font": "sans_serif_n4",
+    "type_accent_font": "sans_serif_n4",
     "type_size_paragraph": "14",
+    "type_font_h1": "heading",
     "type_size_h1": "72",
     "type_size_h2": "48",
     "type_case_h2": "none",
@@ -31,6 +34,7 @@
     "card_corner_radius": 10,
     "variant_button_radius": 100,
     "variant_button_width": "default-width-buttons",
+    "content_for_index": [],
     "color_schemes": {
       "scheme-1": {
         "settings": {
@@ -344,9 +348,7 @@
           "selected_variant_hover_border_color": "#1a1a1a"
         }
       }
-    },
-    "logo_height": 36,
-    "logo_height_mobile": 28
+    }
   },
   "presets": {
     "Tinker": {
