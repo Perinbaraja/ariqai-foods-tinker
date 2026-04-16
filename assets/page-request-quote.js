@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setMessageVisibility(false, true);
   }
 
+  function sleep(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
   function renderCartItems(items) {
     if (!cartContainer) return;
 
@@ -76,45 +80,90 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  async function sendQuoteRequest(payload) {
-    const endpoint = '/apps/quote-mailer';
+  function isLikelyHtmlResponse(responseText, contentType) {
+    if ((contentType || '').includes('text/html')) return true;
+    return /^\s*<!doctype html/i.test(responseText || '') || /^\s*<html/i.test(responseText || '');
+  }
 
-    const response = await fetch(endpoint, {
+  async function postQuoteRequest(endpoint, payload, format = 'json') {
+    const requestOptions = {
       method: 'POST',
+      credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest',
       },
-      mode: 'cors',
-      body: JSON.stringify(payload),
-    });
+    };
 
+    if (format === 'form') {
+      const formData = new URLSearchParams();
+      formData.append('customerName', payload.customerName || '');
+      formData.append('customerEmail', payload.customerEmail || '');
+      formData.append('customerPhone', payload.customerPhone || '');
+      formData.append('company', payload.company || '');
+      formData.append('notes', payload.notes || '');
+      formData.append('products', JSON.stringify(payload.products || []));
+      formData.append('payload', JSON.stringify(payload));
+      requestOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+      requestOptions.body = formData.toString();
+    } else {
+      requestOptions.headers['Content-Type'] = 'application/json';
+      requestOptions.body = JSON.stringify(payload);
+    }
+
+    const response = await fetch(endpoint, requestOptions);
     const responseText = await response.text();
+    const contentType = response.headers.get('Content-Type') || '';
+
     if (!response.ok) {
-      let message = 'Failed to send quote request';
+      let message = `Failed to send quote request (${response.status})`;
       try {
         const data = JSON.parse(responseText || '{}');
         if (data?.message) message = data.message;
       } catch (error) {
-        console.warn('Quote request error response was not JSON:', error);
+        if (responseText?.trim()) {
+          message = responseText.trim();
+        }
       }
       throw new Error(message);
     }
 
-    if (!responseText) {
-      return null;
+    if (!responseText) return null;
+
+    if (isLikelyHtmlResponse(responseText, contentType)) {
+      throw new Error('Received HTML instead of app response');
     }
 
-    const contentType = response.headers.get('Content-Type') || '';
-    if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(responseText);
+    } catch (error) {
+      return { ok: true, raw: responseText };
+    }
+  }
+
+  async function sendQuoteRequest(payload) {
+    const endpoint = '/apps/quote-mailer';
+    const attempts = [
+      { format: 'json', delay: 0 },
+      { format: 'form', delay: 250 },
+      { format: 'form', delay: 800 },
+    ];
+    let lastError;
+
+    for (const attempt of attempts) {
+      if (attempt.delay) {
+        await sleep(attempt.delay);
+      }
+
       try {
-        return JSON.parse(responseText);
+        return await postQuoteRequest(endpoint, payload, attempt.format);
       } catch (error) {
-        console.warn('Received non-JSON body for successful quote request:', error);
-        return null;
+        lastError = error;
+        console.warn(`Quote request attempt failed (${attempt.format})`, error);
       }
     }
 
-    return null;
+    throw lastError || new Error('Failed to send quote request');
   }
 
   async function clearCart() {
@@ -147,6 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const company = document.getElementById('RequestQuoteForm-company')?.value.trim();
       const notes = document.getElementById('RequestQuoteForm-body')?.value.trim();
 
+      if (!form.reportValidity()) {
+        showError();
+        event.preventDefault();
+        return;
+      }
+
       const productsPayload = cartItems.map((item) => ({
         name: item.product_title,
         variant: item.id || '',
@@ -166,6 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
           .join('\n')}\n\nNotes:\n${notes || 'N/A'}`;
       }
 
+      if (!customerName || !customerEmail || !customerPhone || !productsPayload.length) {
+        showError();
+        event.preventDefault();
+        return;
+      }
+
       const payload = {
         customerName,
         customerEmail,
@@ -176,6 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
+        setMessageVisibility(false, false);
+
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Submitting...';
+        }
+
         await sendQuoteRequest(payload);
         showSuccess();
         form.reset();
@@ -190,6 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         console.error('Quote request failed', error);
         showError();
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Submit Quote Request';
+        }
       }
     });
   }
