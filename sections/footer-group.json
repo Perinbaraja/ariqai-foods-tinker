@@ -19,9 +19,11 @@
           "static": true,
           "settings": {
             "media_type": "image",
+            "image": "shopify://shop_images/imgi_5_MoringaSoup.jpg",
             "link": "",
+            "video": "shopify://files/videos/169020-840229949_tiny.mp4",
             "video_loop": true,
-            "video_autoplay": false,
+            "video_autoplay": true,
             "image_position": "cover",
             "video_position": "cover"
           },
@@ -69,9 +71,9 @@
                 "width": "fill",
                 "custom_width": 100,
                 "inherit_color_scheme": true,
+                "color_scheme": "scheme-4",
                 "heading": "",
                 "heading_preset": "h3",
-                "color_scheme": "scheme-4",
                 "border_style": "all",
                 "border_width": 0,
                 "border_radius": 100,

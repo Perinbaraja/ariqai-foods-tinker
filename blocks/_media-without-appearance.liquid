@@ -1,12 +1,68 @@
-
 {% liquid
   assign unset_image_tag = false
+
   if block.settings.image_position == 'contain'
     assign unset_image_tag = true
   endif
 %}
 
-{% render 'media', unset_image_tag: unset_image_tag %}
+{% if block.settings.media_type == 'image' %}
+
+  {% render 'media', unset_image_tag: unset_image_tag %}
+
+{% elsif block.settings.media_type == 'video' %}
+
+  <div class="custom-video-wrapper">
+    <video
+      class="custom-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src="{{ block.settings.video | video_url }}" type="video/mp4">
+    </video>
+  </div>
+
+{% endif %}
+
+<style>
+.custom-video-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.custom-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 🚫 Hide ALL controls (extra safety) */
+.custom-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.custom-video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+.custom-video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+.custom-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
+/* Optional: disable interaction */
+.custom-video {
+  pointer-events: none;
+}
+</style>
 
 {% schema %}
 {
@@ -39,7 +95,7 @@
       "type": "url",
       "id": "link",
       "label": "t:settings.link",
-      "visible_if": "{{ block.settings.media_type == 'image'  }}"
+      "visible_if": "{{ block.settings.media_type == 'image' }}"
     },
     {
       "type": "video",
@@ -58,7 +114,7 @@
       "type": "checkbox",
       "id": "video_autoplay",
       "label": "t:settings.autoplay",
-      "default": false,
+      "default": true,
       "visible_if": "{{ block.settings.media_type == 'video' }}"
     },
     {
@@ -71,7 +127,7 @@
           "label": "t:options.cover"
         },
         {
-          "value": "contain ",
+          "value": "contain",
           "label": "t:options.contain"
         }
       ],
