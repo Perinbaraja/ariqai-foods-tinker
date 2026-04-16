@@ -222,6 +222,38 @@ export class QuantitySelectorComponent extends Component {
   }
 
   /**
+   * Handles the quantity input event.
+   * Limits typed values to the effective max and prevents more than 5 digits.
+   * @param {Event} event - The event.
+   */
+  clampQuantity(event) {
+    if (!(event.target instanceof HTMLInputElement)) return;
+
+    const { quantityInput } = this.refs;
+    const rawValue = event.target.value.replace(/[^0-9]/g, '');
+    let numericValue = parseInt(rawValue, 10);
+    if (Number.isNaN(numericValue)) {
+      numericValue = parseInt(quantityInput.min, 10) || 1;
+    }
+
+    const effectiveMax = this.getEffectiveMax();
+    if (effectiveMax !== null && numericValue > effectiveMax) {
+      numericValue = effectiveMax;
+    }
+
+    if (numericValue.toString().length > 5) {
+      numericValue = parseInt(numericValue.toString().slice(0, 5), 10) || numericValue;
+    }
+
+    if (numericValue !== parseInt(quantityInput.value, 10)) {
+      quantityInput.value = numericValue.toString();
+    }
+
+    this.onQuantityChange();
+    this.updateButtonStates();
+  }
+
+  /**
    * Handles the quantity set event (on blur).
    * Validates and snaps to valid values.
    * @param {Event} event - The event.

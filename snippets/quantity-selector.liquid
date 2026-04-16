@@ -28,6 +28,17 @@
   else
     assign min_quantity = variant.quantity_rule.min | default: 1
   endif
+
+  assign max_quantity = 99999
+  if variant.quantity_rule.max
+    assign max_quantity = variant.quantity_rule.max
+  endif
+
+  if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+    if variant.inventory_quantity < max_quantity
+      assign max_quantity = variant.inventory_quantity
+    endif
+  endif
 %}
 
 <div
@@ -66,6 +77,7 @@
       data-cart-quantity="{{ cart | item_count_for_variant: variant.id }}"
       min="{{ min_quantity }}"
       data-min="{{ variant.quantity_rule.min | default: 1 }}"
+      on:input="/clampQuantity"
       on:blur="/setQuantity"
       on:focus="/selectInputValue"
       ref="quantityInput"
@@ -74,8 +86,8 @@
       {% if line_index %}
         data-cart-line="{{ line_index | plus: 1 }}"
       {% endif %}
-      {% if variant.quantity_rule.max %}
-        max="{{ variant.quantity_rule.max }}"
+      {% if max_quantity != blank %}
+        max="{{ max_quantity }}"
       {% endif %}
       step="{{ variant.quantity_rule.increment | default: 1 }}"
       {% if can_update_quantity == false or variant.available == false %}

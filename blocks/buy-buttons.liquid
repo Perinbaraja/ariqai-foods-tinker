@@ -84,8 +84,15 @@
           {%- endunless -%}
 
           {%- liquid
+            assign effective_quantity_max = variant.quantity_rule.max
+            if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+              if effective_quantity_max == blank or variant.inventory_quantity < effective_quantity_max
+                assign effective_quantity_max = variant.inventory_quantity
+              endif
+            endif
+
             assign has_quantity_rules = false
-            if variant.quantity_rule.min > 1 or variant.quantity_rule.increment > 1 or variant.quantity_rule.max != null
+            if variant.quantity_rule.min > 1 or variant.quantity_rule.increment > 1 or effective_quantity_max != blank
               assign has_quantity_rules = true
             endif
           -%}
@@ -123,9 +130,9 @@
                   {{ 'products.product.quantity_minimum' | t: minimum: variant.quantity_rule.min }}
                 </span>
               {%- endif -%}
-              {%- if variant.quantity_rule.max != null -%}
+              {%- if effective_quantity_max != blank -%}
                 <span class="quantity-rules__item">
-                  {{ 'products.product.quantity_maximum' | t: maximum: variant.quantity_rule.max }}
+                  {{ 'products.product.quantity_maximum' | t: maximum: effective_quantity_max }}
                 </span>
               {%- endif -%}
             </div>

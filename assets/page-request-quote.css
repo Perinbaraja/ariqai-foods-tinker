@@ -56,11 +56,18 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: static;
 }
 
 .request-quote-page__form .field__label {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin-bottom: 0.25rem;
   font-size: 0.9rem;
   font-weight: 500;
+  pointer-events: auto;
 }
 
 .request-quote-page__form .field__input {

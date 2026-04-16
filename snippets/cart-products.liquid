@@ -959,9 +959,11 @@
     }
 
     .cart-items .quantity-selector {
-      --quantity-selector-width: 105px;
+      --quantity-selector-width: 152px;
       height: var(--button-size-md);
-      width: var(--quantity-selector-width);
+      min-width: var(--quantity-selector-width);
+      width: auto;
+      max-width: 100%;
     }
 
     .cart-items .quantity-selector button {
@@ -970,7 +972,7 @@
     }
 
     .cart-items .quantity-selector input {
-      max-width: calc(var(--quantity-selector-width) - var(--button-size-md) * 2);
+      max-width: 100%;
     }
   }
 

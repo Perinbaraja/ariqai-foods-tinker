@@ -3030,7 +3030,8 @@ label:has(input[type='checkbox']:disabled) {
   background-color: var(--color-input-background);
   border: var(--style-border-width-inputs) solid var(--color-input-border);
   border-radius: var(--style-border-radius-inputs);
-  flex: 1 1 var(--quantity-selector-width);
+  flex: 0 0 auto;
+  min-width: var(--quantity-selector-width);
   align-self: stretch;
   transition: background-color var(--animation-speed) var(--animation-easing);
 
@@ -3103,7 +3104,10 @@ label:has(input[type='checkbox']:disabled) {
   text-align: center;
   border: none;
   appearance: none;
-  max-width: calc(var(--quantity-selector-width) - var(--minimum-touch-target) * 2);
+  flex: 1 1 auto;
+  min-width: 3ch;
+  max-width: 100%;
+  width: auto;
   border-radius: var(--style-border-radius-buttons);
   color: var(--color-input-text);
   background-color: transparent;
