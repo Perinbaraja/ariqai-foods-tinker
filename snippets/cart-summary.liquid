@@ -262,21 +262,9 @@
 </div>
 
 <div class="cart__ctas">
-    {% capture cart_quote_details %}
-      {% for item in cart.items %}
-        {{ item.product.title }}{% unless item.variant.title == 'Default Title' %} - {{ item.variant.title }}{% endunless %} x {{ item.quantity }}{% unless forloop.last %}\n{% endunless %}
-      {% endfor %}
-    {% endcapture %}
-    <button
-      type="button"
-      class="cart__checkout-button button"
-      data-request-quote-trigger
-      data-quote-source="cart"
-      data-quote-url="{{ shop.url }}{{ routes.cart_url }}"
-      data-quote-details="{{ cart_quote_details | strip | escape }}"
-    >
+    <a href="/pages/request-quote" class="cart__checkout-button button">
       <span class="button-text">Request quote</span>
-    </button>
+    </a>
 
 </div>
 
