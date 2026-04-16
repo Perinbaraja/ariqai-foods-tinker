@@ -9,6 +9,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let cartItems = [];
 
+  function syncThemeCartCount(itemCount = 0) {
+    const normalizedCount = Math.max(0, Number(itemCount) || 0);
+    const cartIcon = document.querySelector('cart-icon');
+    const cartBubble = cartIcon?.querySelector('.cart-bubble');
+    const cartBubbleCount = cartIcon?.querySelector('[data-testid="cart-bubble"]');
+
+    if (cartBubble && cartBubbleCount) {
+      cartBubble.classList.toggle('visually-hidden', normalizedCount === 0);
+      cartBubbleCount.classList.toggle('hidden', normalizedCount === 0);
+      cartBubbleCount.textContent = normalizedCount > 0 && normalizedCount < 100 ? String(normalizedCount) : '';
+      cartIcon.classList.toggle('header-actions__cart-icon--has-cart', normalizedCount > 0);
+    }
+
+    try {
+      sessionStorage.setItem(
+        'cart-count',
+        JSON.stringify({
+          value: String(normalizedCount < 100 ? normalizedCount : ''),
+          timestamp: Date.now(),
+        })
+      );
+    } catch (error) {
+      console.warn('Unable to persist cart count in session storage:', error);
+    }
+
+    const cartUpdateEvent = new Event('cart:update', { bubbles: true });
+    cartUpdateEvent.detail = {
+      resource: {
+        items: normalizedCount === 0 ? [] : cartItems,
+        item_count: normalizedCount,
+      },
+      sourceId: 'request-quote-page',
+      data: {
+        source: 'request-quote-page',
+        itemCount: normalizedCount,
+      },
+    };
+    document.dispatchEvent(cartUpdateEvent);
+  }
+
   function setMessageVisibility(showSuccess = false, showError = false) {
     if (successMessage) successMessage.style.display = showSuccess ? 'flex' : 'none';
     if (errorMessage) errorMessage.style.display = showError ? 'flex' : 'none';
@@ -70,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(window.Shopify.routes.root + 'cart.js');
       const cart = await response.json();
       cartItems = cart.items || [];
-      console.log('Cart items:', cartItems);
       renderCartItems(cartItems);
+      syncThemeCartCount(cart.item_count ?? cartItems.reduce((total, item) => total + (item.quantity || 0), 0));
     } catch (error) {
       console.error('Error fetching cart:', error);
       if (cartContainer) {
@@ -249,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         await clearCart();
         cartItems = [];
+        syncThemeCartCount(0);
         renderCartItems(cartItems);
         await fetchCart();
         if (submitButton) {

@@ -191,9 +191,19 @@
 }
 
 .request-quote-page__empty-cart {
+  min-height: 18rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
   text-align: center;
   padding: 2rem 0;
   color: rgb(var(--color-foreground-rgb) / 0.6);
+}
+
+.request-quote-page__empty-cart .button {
+  align-self: center;
 }
 
 .request-quote-page__success {
