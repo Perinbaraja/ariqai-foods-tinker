@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "section": {
       "type": "section",
@@ -68,6 +69,7 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
             "open_in_new_tab": false,
             "placeholder": "",
             "padding-block-start": 0,
@@ -82,6 +84,7 @@
               "disabled": true,
               "settings": {
                 "image": "{{ closest.collection.image }}",
+                "link": "",
                 "image_ratio": "adapt",
                 "width": "fill",
                 "custom_width": 100,
@@ -196,7 +199,7 @@
           "static": true,
           "settings": {
             "product_card_gap": 0,
-            "inherit_color_scheme": false,
+            "inherit_color_scheme": true,
             "color_scheme": "scheme-e1e09ff5-6396-47cd-ad7a-c05470cf2a2e",
             "border": "none",
             "border_width": 1,
@@ -253,6 +256,7 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
                 "open_in_new_tab": false,
                 "padding-block-start": 24,
                 "padding-block-end": 24,
@@ -340,13 +344,14 @@
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
         "enable_infinite_scroll": false,
+        "products_per_page": 24,
         "product_grid_width": "centered",
         "full_width_on_mobile": false,
         "columns_gap_horizontal": 16,
         "columns_gap_vertical": 16,
         "padding-inline-start": 0,
         "padding-inline-end": 0,
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "padding-block-start": 32,
         "padding-block-end": 32
       }
