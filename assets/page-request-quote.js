@@ -247,17 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
         variant: item.id || '',
         sku: item.sku || '',
         quantity: item.quantity,
+        image: item.image || '',
       }));
 
       if (hiddenProductsInput) {
         hiddenProductsInput.value = productsPayload
-          .map((item) => `${item.name} (${item.quantity})${item.sku ? ` - ${item.sku}` : ''}`)
+          .map(
+            (item) =>
+              `${item.name} (${item.quantity})${item.sku ? ` - ${item.sku}` : ''}${item.image ? ` - Image: ${item.image}` : ''}`
+          )
           .join('\n');
       }
 
       if (contactBodyInput) {
         contactBodyInput.value = `Products:\n${productsPayload
-          .map((item) => `${item.name} x ${item.quantity}${item.sku ? ` (SKU: ${item.sku})` : ''}`)
+          .map(
+            (item) =>
+              `${item.name} x ${item.quantity}${item.sku ? ` (SKU: ${item.sku})` : ''}${item.image ? `\nImage: ${item.image}` : ''}`
+          )
           .join('\n')}\n\nNotes:\n${notes || 'N/A'}`;
       }
 
