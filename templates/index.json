@@ -352,7 +352,7 @@
                 "custom_width_mobile": 100,
                 "height": "fit",
                 "custom_height": 100,
-                "inherit_color_scheme": false,
+                "inherit_color_scheme": true,
                 "color_scheme": "scheme-1",
                 "background_media": "none",
                 "video_position": "cover",
